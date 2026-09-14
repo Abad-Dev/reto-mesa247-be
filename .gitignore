@@ -1,5 +1,8 @@
 .venv
+venv/
 __pycache__/
+*.db
+data/*.db
 *.pyc
 *.pyo
 *.pyd

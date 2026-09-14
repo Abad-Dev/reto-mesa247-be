@@ -15,6 +15,11 @@ def listar_locales(db: Session = Depends(get_db)):
     return list(db.scalars(select(Local).order_by(Local.id.asc())).all())
 
 
+@router.get("/local/{local_id}", response_model=LocalResponse)
+def obtener_local(local_id: int, db: Session = Depends(get_db)):
+    return obtener_local_o_404(db, local_id)
+
+
 @router.get("/locales/{local_id}/mesas", response_model=list[MesaResponse])
 def listar_mesas(local_id: int, db: Session = Depends(get_db)):
     obtener_local_o_404(db, local_id)

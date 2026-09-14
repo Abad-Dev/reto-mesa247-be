@@ -129,3 +129,14 @@ def test_sentar_rechaza_mesa_chica(client: TestClient):
     )
     assert respuesta.status_code == 400
     client.patch(f"/cola/{entrada['id']}/cancelar")
+
+
+def test_obtener_local_por_id(client: TestClient):
+    respuesta = client.get("/local/1")
+    assert respuesta.status_code == 200
+    body = respuesta.json()
+    assert body["id"] == 1
+    assert body["nombre"]
+
+    inexistente = client.get("/local/999")
+    assert inexistente.status_code == 404

@@ -6,5 +6,6 @@ Endpoints básicos:
 4. Anfitrión actualiza el tiempo estimado del comensal en la cola - PATCH /cola/:id
 5. Anfitrión reordena los comensales en la cola - PUT /cola/:id/reordenar
 6. Anfitrión llama al comensal en la cola - PATCH /cola/:id/llamar
-7. Anfitrión sienta al comensal en la mesa - PATCH /cola/:id/sentar
+7. Comensal indica que va en camino (opcional) - PATCH /cola/:id/en-camino
+8. Anfitrión sienta al comensal en la mesa - PATCH /cola/:id/sentar
 

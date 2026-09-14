@@ -10,6 +10,7 @@ from app.database import Base
 class EstadoEntradaCola(str, enum.Enum):
     ESPERANDO = "esperando"
     LLAMADO = "llamado"
+    EN_CAMINO = "en_camino"
     SENTADO = "sentado"
     NO_SHOW = "no_show"
     CANCELADO = "cancelado"

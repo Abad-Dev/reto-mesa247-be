@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS entrada_cola (
     telefono_comensal TEXT NOT NULL,
     cantidad_personas INTEGER NOT NULL CHECK (cantidad_personas > 0),
     estado TEXT NOT NULL DEFAULT 'esperando' CHECK (
-        estado IN ('esperando', 'llamado', 'sentado', 'no_show', 'cancelado')
+        estado IN ('esperando', 'llamado', 'en_camino', 'sentado', 'no_show', 'cancelado')
     ),
     "orden" INTEGER NOT NULL,
     es_frecuente INTEGER NOT NULL DEFAULT 0 CHECK (es_frecuente IN (0, 1)),

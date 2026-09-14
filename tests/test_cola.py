@@ -140,3 +140,19 @@ def test_obtener_local_por_id(client: TestClient):
 
     inexistente = client.get("/local/999")
     assert inexistente.status_code == 404
+
+
+def test_en_camino_es_opcional_despues_de_llamar(client: TestClient):
+    entrada = _crear(client, _nombre(), personas=4)
+    temprano = client.patch(f"/cola/{entrada['id']}/en-camino")
+    assert temprano.status_code == 409
+
+    client.patch(f"/cola/{entrada['id']}/llamar")
+    en_camino = client.patch(f"/cola/{entrada['id']}/en-camino")
+    assert en_camino.status_code == 200
+    assert en_camino.json()["estado"] == "en_camino"
+
+    mesa = _mesa_con_capacidad(client, 1, 4)
+    sentado = client.patch(f"/cola/{entrada['id']}/sentar", json={"id_mesa": mesa["id"]})
+    assert sentado.status_code == 200
+    assert sentado.json()["estado"] == "sentado"

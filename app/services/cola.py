@@ -13,7 +13,12 @@ from app.schemas import (
     SentarEntradaRequest,
 )
 
-ESTADOS_EN_COLA = (EstadoEntradaCola.ESPERANDO, EstadoEntradaCola.LLAMADO)
+ESTADOS_EN_COLA = (
+    EstadoEntradaCola.ESPERANDO,
+    EstadoEntradaCola.LLAMADO,
+    EstadoEntradaCola.EN_CAMINO,
+)
+ESTADOS_PARA_SENTAR = (EstadoEntradaCola.LLAMADO, EstadoEntradaCola.EN_CAMINO)
 MINUTOS_POR_PUESTO = 15
 
 
@@ -163,9 +168,23 @@ def llamar_entrada(db: Session, entrada_id: int) -> EntradaCola:
     return entrada
 
 
-def sentar_entrada(db: Session, entrada_id: int, data: SentarEntradaRequest) -> EntradaCola:
+def marcar_en_camino(db: Session, entrada_id: int) -> EntradaCola:
     entrada = obtener_entrada_o_404(db, entrada_id)
     if entrada.estado != EstadoEntradaCola.LLAMADO:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Solo un comensal llamado puede indicar que va en camino",
+        )
+
+    entrada.estado = EstadoEntradaCola.EN_CAMINO
+    db.commit()
+    db.refresh(entrada)
+    return entrada
+
+
+def sentar_entrada(db: Session, entrada_id: int, data: SentarEntradaRequest) -> EntradaCola:
+    entrada = obtener_entrada_o_404(db, entrada_id)
+    if entrada.estado not in ESTADOS_PARA_SENTAR:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Primero hay que llamar al comensal antes de sentarlo",
@@ -205,7 +224,7 @@ def cancelar_entrada(db: Session, entrada_id: int) -> EntradaCola:
 
 def marcar_no_show(db: Session, entrada_id: int) -> EntradaCola:
     entrada = obtener_entrada_o_404(db, entrada_id)
-    if entrada.estado != EstadoEntradaCola.LLAMADO:
+    if entrada.estado not in ESTADOS_PARA_SENTAR:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Solo se puede marcar no-show a un comensal que ya fue llamado",

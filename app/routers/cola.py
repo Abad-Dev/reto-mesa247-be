@@ -63,6 +63,13 @@ def llamar_entrada(entrada_id: int, db: Session = Depends(get_db)):
     return cola_service.to_response(entrada, activas)
 
 
+@router.patch("/cola/{entrada_id}/en-camino", response_model=EntradaColaResponse)
+def marcar_en_camino(entrada_id: int, db: Session = Depends(get_db)):
+    entrada = cola_service.marcar_en_camino(db, entrada_id)
+    activas = cola_service.entradas_activas(db, entrada.id_local)
+    return cola_service.to_response(entrada, activas)
+
+
 @router.patch("/cola/{entrada_id}/sentar", response_model=EntradaColaResponse)
 def sentar_entrada(
     entrada_id: int,

@@ -6,6 +6,6 @@ Mesa: id, id_local, capacidad
 
 EntradaCola: 
 id, id_local, nombre_comensal, telefono_comensal, 
-cantidad_personas, estado (esperando/llamado/sentado/no_show/cancelado),
+cantidad_personas, estado (esperando/llamado/en_camino/sentado/no_show/cancelado),
 orden, es_frecuente, id_mesa (nullable),
 fecha_hora_union, fecha_hora_llamado (nullable)

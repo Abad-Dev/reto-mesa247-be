@@ -41,12 +41,19 @@ def _run_sql_file(connection: sqlite3.Connection, filename: str) -> None:
     connection.executescript(script)
 
 
+def _ensure_columns(connection: sqlite3.Connection) -> None:
+    columns = {row[1] for row in connection.execute("PRAGMA table_info(entrada_cola)")}
+    if "tiempo_estimado_minutos" not in columns:
+        connection.execute("ALTER TABLE entrada_cola ADD COLUMN tiempo_estimado_minutos INTEGER")
+
+
 def init_db() -> Path:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     with sqlite3.connect(DB_PATH) as connection:
         connection.execute("PRAGMA foreign_keys=ON")
         _run_sql_file(connection, "schema.sql")
+        _ensure_columns(connection)
 
         locales = connection.execute("SELECT COUNT(*) FROM local").fetchone()[0]
         if locales == 0:

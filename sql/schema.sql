@@ -26,6 +26,9 @@ CREATE TABLE IF NOT EXISTS entrada_cola (
     id_mesa INTEGER,
     fecha_hora_union DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     fecha_hora_llamado DATETIME,
+    tiempo_estimado_minutos INTEGER CHECK (
+        tiempo_estimado_minutos IS NULL OR tiempo_estimado_minutos >= 0
+    ),
     FOREIGN KEY (id_local) REFERENCES local(id) ON DELETE RESTRICT,
     FOREIGN KEY (id_mesa) REFERENCES mesa(id) ON DELETE SET NULL
 );

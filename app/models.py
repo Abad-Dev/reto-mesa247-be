@@ -43,6 +43,10 @@ class EntradaCola(Base):
     __tablename__ = "entrada_cola"
     __table_args__ = (
         CheckConstraint("cantidad_personas > 0", name="ck_entrada_cola_cantidad_positiva"),
+        CheckConstraint(
+            "tiempo_estimado_minutos IS NULL OR tiempo_estimado_minutos >= 0",
+            name="ck_entrada_cola_tiempo_estimado",
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -64,6 +68,7 @@ class EntradaCola(Base):
         server_default=func.current_timestamp(),
     )
     fecha_hora_llamado: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    tiempo_estimado_minutos: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     local: Mapped["Local"] = relationship(back_populates="entradas_cola")
     mesa: Mapped["Mesa | None"] = relationship(back_populates="entradas_cola")
